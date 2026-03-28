@@ -151,6 +151,27 @@
   }
 }
 
+/* Brand gradient backgrounds */
+.brand-gradient {
+  background: linear-gradient(135deg, #F4F1F6 0%, #E9E4EC 35%, #D8CDEA 70%, #c4b5de 100%);
+}
+
+.brand-gradient-vertical {
+  background: linear-gradient(180deg, #F4F1F6 0%, #E9E4EC 40%, #D8CDEA 100%);
+}
+
+.brand-gradient-radial {
+  background: radial-gradient(ellipse at 30% 20%, #F4F1F6 0%, #E9E4EC 40%, #D8CDEA 80%);
+}
+
+.brand-gradient-dark {
+  background: linear-gradient(135deg, #2D2538 0%, #3d3250 40%, #D8CDEA 100%);
+}
+
+.brand-gradient-subtle {
+  background: linear-gradient(160deg, #F4F1F6 0%, #EDE9F2 50%, #E9E4EC 100%);
+}
+
 /* Ambient background gradient blobs */
 .glass-bg {
   position: fixed;
@@ -158,6 +179,7 @@
   z-index: -1;
   overflow: hidden;
   pointer-events: none;
+  background: linear-gradient(160deg, #F4F1F6 0%, #EDE9F2 50%, #E9E4EC 100%);
 }
 
 .glass-bg::before,
@@ -173,7 +195,7 @@
 .glass-bg::before {
   width: 500px;
   height: 500px;
-  background: radial-gradient(circle, hsl(261 30% 86% / 0.6), transparent 70%);
+  background: radial-gradient(circle, #D8CDEA99, transparent 70%);
   top: -10%;
   right: -10%;
   animation-delay: 0s;
@@ -182,14 +204,34 @@
 .glass-bg::after {
   width: 400px;
   height: 400px;
-  background: radial-gradient(circle, hsl(270 30% 80% / 0.4), transparent 70%);
+  background: radial-gradient(circle, #E9E4EC99, transparent 70%);
   bottom: 10%;
   left: -10%;
   animation-delay: -10s;
+}
+
+.dark .glass-bg {
+  background: linear-gradient(160deg, #2D2538 0%, #342a45 50%, #3d3250 100%);
+}
+
+.dark .glass-bg::before {
+  background: radial-gradient(circle, #D8CDEA26, transparent 70%);
+}
+
+.dark .glass-bg::after {
+  background: radial-gradient(circle, #E9E4EC1a, transparent 70%);
 }
 
 @keyframes float {
   0%, 100% { transform: translate(0, 0) scale(1); }
   33% { transform: translate(30px, -20px) scale(1.05); }
   66% { transform: translate(-20px, 15px) scale(0.95); }
+}
+
+@keyframes heartbeat {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  15% { transform: scale(1.08); opacity: 1; }
+  30% { transform: scale(0.98); opacity: 0.9; }
+  45% { transform: scale(1.05); opacity: 1; }
+  60% { transform: scale(1); opacity: 0.95; }
 }

@@ -47,11 +47,56 @@ const Onboarding = ({ onComplete }: { onComplete: () => void }) => {
       {/* Step 0: Welcome */}
       {step === 0 && (
         <div className="relative flex flex-col items-center gap-8 text-center animate-in fade-in duration-500">
-          <div className="relative">
-            <div className="absolute inset-[-8px] rounded-full glass opacity-60 animate-pulse" />
-            <div className="relative flex h-28 w-28 items-center justify-center rounded-full glass-strong text-primary">
-              <Heart className="h-14 w-14" />
-            </div>
+          <div className="relative flex items-center justify-center animate-[heartbeat_1.5s_ease-in-out_infinite]" style={{ width: 320, height: 320 }}>
+            {/* Widest diffused bloom */}
+            <div
+              className="absolute"
+              style={{
+                width: 320,
+                height: 320,
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+                filter: 'blur(70px)',
+                background: 'radial-gradient(circle, rgba(196,181,222,0.5), transparent 70%)',
+              }}
+            />
+            {/* Mid-range glow */}
+            <div
+              className="absolute"
+              style={{
+                width: 240,
+                height: 240,
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+                filter: 'blur(45px)',
+                background: 'radial-gradient(circle, rgba(196,181,222,0.6), transparent 65%)',
+              }}
+            />
+            {/* Inner bright glow */}
+            <div
+              className="absolute"
+              style={{
+                width: 160,
+                height: 160,
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+                filter: 'blur(20px)',
+                background: 'radial-gradient(circle, rgba(216,205,234,0.8), transparent 60%)',
+              }}
+            />
+            {/* Core heart — lavender fill with defined edges and purple glow */}
+            <Heart
+              className="relative h-36 w-36"
+              fill="rgba(216,205,234,0.7)"
+              stroke="rgba(150,130,180,0.5)"
+              strokeWidth={1.5}
+              style={{
+                filter: 'drop-shadow(0 0 2px rgba(150,130,180,0.4)) drop-shadow(0 0 20px rgba(196,181,222,0.7)) drop-shadow(0 0 40px rgba(196,181,222,0.4)) drop-shadow(0 0 80px rgba(196,181,222,0.2))',
+              }}
+            />
           </div>
           <div>
             <h1 className="font-display text-4xl font-bold tracking-tight text-foreground">
