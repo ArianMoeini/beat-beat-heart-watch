@@ -2,7 +2,6 @@ import { useState, useRef, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Heart, Smartphone, Loader2, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { ScanResultType } from '@/lib/types';
@@ -14,9 +13,8 @@ import TryAgainResult from '@/components/results/TryAgainResult';
 
 type Phase = 'position' | 'recording' | 'analyzing' | 'result';
 
-const SCAN_DURATION = 15; // seconds
+const SCAN_DURATION = 15;
 
-// Mock analysis — weighted random result
 function mockAnalyze(): { result: ScanResultType; title: string; description: string; condition?: string; steps?: string } {
   const roll = Math.random();
   if (roll < 0.5) return { result: 'normal', title: 'Normal Rhythm', description: 'Your heart rhythm appears normal and healthy.' };
@@ -31,6 +29,7 @@ const Scan = () => {
   const [phase, setPhase] = useState<Phase>('position');
   const [countdown, setCountdown] = useState(SCAN_DURATION);
   const [analysisResult, setAnalysisResult] = useState<ReturnType<typeof mockAnalyze> | null>(null);
+  const [audioUrl, setAudioUrl] = useState<string | null>(null);
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
@@ -38,8 +37,11 @@ const Scan = () => {
   const startTimeRef = useRef(0);
 
   useEffect(() => {
-    return () => { if (timerRef.current) clearInterval(timerRef.current); };
-  }, []);
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+      if (audioUrl) URL.revokeObjectURL(audioUrl);
+    };
+  }, [audioUrl]);
 
   const startRecording = useCallback(async () => {
     try {
@@ -77,8 +79,12 @@ const Scan = () => {
   const handleAnalysis = async () => {
     setPhase('analyzing');
 
-    // Upload recording
+    // Create local playback URL
     const blob = new Blob(chunksRef.current, { type: 'audio/webm' });
+    const localUrl = URL.createObjectURL(blob);
+    setAudioUrl(localUrl);
+
+    // Upload recording
     const fileName = `scan_${Date.now()}.webm`;
     const { error: storageError } = await supabase.storage.from('recordings').upload(fileName, blob, { contentType: 'audio/webm' });
 
@@ -94,12 +100,10 @@ const Scan = () => {
       if (recData) recordingId = recData.id;
     }
 
-    // Mock analysis delay
     await new Promise(r => setTimeout(r, 2500));
     const result = mockAnalyze();
     setAnalysisResult(result);
 
-    // Save to scans (except try_again)
     if (result.result !== 'try_again') {
       await supabase.from('scans').insert({
         recording_id: recordingId,
@@ -121,6 +125,7 @@ const Scan = () => {
   const resetScan = () => {
     setPhase('position');
     setAnalysisResult(null);
+    setAudioUrl(null);
     setCountdown(SCAN_DURATION);
   };
 
@@ -133,7 +138,6 @@ const Scan = () => {
       )}
 
       <div className="flex flex-1 flex-col items-center justify-center">
-        {/* Position */}
         {phase === 'position' && (
           <div className="flex flex-col items-center gap-6 text-center animate-in fade-in duration-300">
             <div className="flex h-24 w-24 items-center justify-center rounded-2xl bg-accent/50">
@@ -149,7 +153,6 @@ const Scan = () => {
           </div>
         )}
 
-        {/* Recording */}
         {phase === 'recording' && (
           <div className="flex flex-col items-center gap-8 text-center animate-in fade-in duration-300">
             <div className="relative">
@@ -167,7 +170,6 @@ const Scan = () => {
           </div>
         )}
 
-        {/* Analyzing */}
         {phase === 'analyzing' && (
           <div className="flex flex-col items-center gap-6 text-center animate-in fade-in duration-300">
             <Loader2 className="h-16 w-16 animate-spin text-primary" />
@@ -176,9 +178,8 @@ const Scan = () => {
           </div>
         )}
 
-        {/* Results */}
         {phase === 'result' && analysisResult && (
-          <div className="w-full max-w-sm">
+          <div className="w-full max-w-sm space-y-6">
             {analysisResult.result === 'normal' && <NormalResult onDone={() => navigate('/')} />}
             {analysisResult.result === 'clear_classification' && (
               <ClearClassificationResult
@@ -192,6 +193,14 @@ const Scan = () => {
             {analysisResult.result === 'inconclusive' && <InconclusiveResult onSendToKry={handleSendToKry} onDone={() => navigate('/')} />}
             {analysisResult.result === 'emergency' && <EmergencyResult onDone={() => navigate('/')} />}
             {analysisResult.result === 'try_again' && <TryAgainResult onRetry={resetScan} />}
+
+            {/* Audio playback after results */}
+            {audioUrl && analysisResult.result !== 'try_again' && (
+              <div className="rounded-xl bg-card p-4">
+                <p className="mb-2 text-xs font-medium text-muted-foreground">Your Recording</p>
+                <audio controls src={audioUrl} className="w-full" />
+              </div>
+            )}
           </div>
         )}
       </div>
