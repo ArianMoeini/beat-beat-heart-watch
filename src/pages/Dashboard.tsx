@@ -74,7 +74,7 @@ const Dashboard = () => {
 
       <Button
         size="lg"
-        className="w-full rounded-2xl py-8 text-lg font-bold glass-strong hover:shadow-xl transition-shadow"
+        className="w-full rounded-2xl py-8 text-lg font-bold shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 transition-shadow"
         onClick={() => navigate('/scan')}
       >
         <Heart className="mr-2 h-6 w-6" />
