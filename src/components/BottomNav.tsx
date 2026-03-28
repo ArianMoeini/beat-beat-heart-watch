@@ -10,11 +10,10 @@ const BottomNav = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Hide on scan and onboarding
   if (location.pathname === '/scan') return null;
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-40 border-t border-border bg-card/95 backdrop-blur-md safe-bottom">
+    <nav className="fixed bottom-0 left-0 right-0 z-40 glass-strong safe-bottom">
       <div className="mx-auto flex max-w-md items-center justify-around py-2">
         {tabs.map(({ path, icon: Icon, label }) => {
           const active = location.pathname === path;
