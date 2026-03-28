@@ -1,10 +1,8 @@
-import { Home, Clock, Mic, SettingsIcon } from 'lucide-react';
+import { Home, SettingsIcon } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 const tabs = [
   { path: '/', icon: Home, label: 'Home' },
-  { path: '/record', icon: Mic, label: 'Record' },
-  { path: '/history', icon: Clock, label: 'History' },
   { path: '/settings', icon: SettingsIcon, label: 'Settings' },
 ];
 
@@ -12,8 +10,8 @@ const BottomNav = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Don't show on log page or onboarding
-  if (location.pathname === '/log' || location.pathname === '/record') return null;
+  // Hide on scan and onboarding
+  if (location.pathname === '/scan') return null;
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-40 border-t border-border bg-card/95 backdrop-blur-md safe-bottom">

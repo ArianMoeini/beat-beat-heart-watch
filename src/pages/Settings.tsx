@@ -31,7 +31,7 @@ const Settings = () => {
   };
 
   const handleClear = () => {
-    if (confirm('This will delete all your readings and settings. Are you sure?')) {
+    if (confirm('This will delete all your data and settings. Are you sure?')) {
       clearAllData();
       setCleared(true);
       setTimeout(() => window.location.reload(), 500);
@@ -48,38 +48,17 @@ const Settings = () => {
 
       <Card className="mt-5 border-0 shadow-sm">
         <CardHeader>
-          <CardTitle className="text-base">Baseline Heart Rate</CardTitle>
+          <CardTitle className="text-base">Profile</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label>Resting Range (BPM)</Label>
-            <div className="flex items-center gap-3">
-              <Input
-                type="number"
-                value={settings.restingBpmLow}
-                onChange={e => update({ restingBpmLow: Number(e.target.value) })}
-                min={30} max={200}
-              />
-              <span className="text-muted-foreground">—</span>
-              <Input
-                type="number"
-                value={settings.restingBpmHigh}
-                onChange={e => update({ restingBpmHigh: Number(e.target.value) })}
-                min={30} max={220}
-              />
-            </div>
-          </div>
-          <div className="space-y-2">
-            <Label>Anomaly Threshold (%)</Label>
+            <Label>Age</Label>
             <Input
               type="number"
-              value={settings.anomalyThreshold}
-              onChange={e => update({ anomalyThreshold: Number(e.target.value) })}
-              min={5} max={100}
+              value={settings.age}
+              onChange={e => update({ age: Number(e.target.value) })}
+              min={1} max={120}
             />
-            <p className="text-xs text-muted-foreground">
-              Readings outside ±{settings.anomalyThreshold}% of your range will be flagged.
-            </p>
           </div>
         </CardContent>
       </Card>
@@ -92,7 +71,7 @@ const Settings = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-foreground">Push Alerts</p>
-              <p className="text-xs text-muted-foreground">Get notified when anomalies are detected</p>
+              <p className="text-xs text-muted-foreground">Get notified about scan results</p>
             </div>
             <Switch
               checked={settings.notificationsEnabled}
@@ -113,7 +92,7 @@ const Settings = () => {
             {cleared ? 'Cleared!' : 'Clear All Data'}
           </Button>
           <p className="mt-2 text-center text-xs text-muted-foreground">
-            This will permanently delete all readings and settings.
+            This will permanently delete all settings.
           </p>
         </CardContent>
       </Card>
